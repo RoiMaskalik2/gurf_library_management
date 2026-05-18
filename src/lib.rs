@@ -7,6 +7,7 @@
 
 pub mod book;
 pub mod book_library;
+pub mod book_storage;
 mod err;
 
 pub use err::Error;

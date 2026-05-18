@@ -6,8 +6,18 @@ use strum::Display;
 #[derive(Debug, From, Display)]
 #[allow(dead_code)]
 pub enum Error {
-    /// Placeholder error
-    PlaceHolder,
+    // ---- book_storage --------------------------------------------
+    /// Occurs on a borrow attempt if all of the storage's books are already borroweds
+    InvalidBookBorrow,
+
+    /// Occurs on a return attempt if all of the storage's books are inside the storage
+    InvalidBookReturn,
+
+    /// Occurs when an overflow occurs when adding a copy of a book
+    CopyAmountOverflow,
+
+    /// Occurs when an overflow occurs when trying to borrow a book
+    BorrowedAmountOverflow,
 }
 
 impl std::error::Error for Error {}
