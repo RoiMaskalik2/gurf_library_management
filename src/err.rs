@@ -18,6 +18,16 @@ pub enum Error {
 
     /// Occurs when an overflow occurs when trying to borrow a book
     BorrowedAmountOverflow,
+
+    // ---- library --------------------------------------------------
+    /// Occurs when an overflow happens when trying to advance book id
+    BookIdOverflow,
+
+    /// Occurs when trying to add a book that already exists in the library
+    AddExistingBookToLibrary,
+
+    /// Occurs when trying to add book copies to a book that does not exist in the library
+    AddBookCopiesOfNonExistingBook,
 }
 
 impl std::error::Error for Error {}

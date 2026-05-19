@@ -14,9 +14,6 @@ const INITIAL_BOOK_COPIES: u32 = 1;
 // the amount of books to add to the borrowed amount when borrowing a book
 const BORROW_BOOK: u32 = 1;
 
-// the amount of books that are added to the storage when adding a copy of a book
-const ADD_BOOK_COPY: u32 = 1;
-
 /// Provides the functionality of storing multiple copies of the same book
 pub struct BookStorage {
     /// contains book information about the book that is stored in the storage
@@ -64,16 +61,16 @@ impl BookStorage {
         Ok(())
     }
 
-    /// Add a book copy to the storage
-    pub fn add_book_copy(&mut self) -> Result<()> {
+    /// Add book copies to the storage
+    pub fn add_book_copies(&mut self, amount_to_add: u32) -> Result<()> {
         self.copy_amount = self
             .copy_amount
-            .checked_add(ADD_BOOK_COPY)
+            .checked_add(amount_to_add)
             .ok_or(Error::CopyAmountOverflow)?;
 
         self.borrowed_amount = self
             .borrowed_amount
-            .checked_add(ADD_BOOK_COPY)
+            .checked_add(amount_to_add)
             .ok_or(Error::BorrowedAmountOverflow)?;
 
         Ok(())
@@ -146,7 +143,7 @@ mod tests {
     #[test]
     fn successful_add_copy() -> Result<()> {
         let mut storage = make_storage();
-        storage.add_book_copy()?;
+        storage.add_book_copies()?;
         assert_eq!(storage.copy_amount, 2);
         assert_eq!(storage.borrowed_amount, 1);
 
