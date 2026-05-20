@@ -4,6 +4,7 @@
 //! 2. Borrow a book from the storage.
 //! 3. Return a book to the storage.
 use crate::{Error, Result, book::Book};
+use std::fmt;
 
 // Represents that all of the books in the book storage are currently inside it.
 const NO_BOOKS_BORROWED: u32 = 0;
@@ -68,17 +69,22 @@ impl BookStorage {
             .checked_add(amount_to_add)
             .ok_or(Error::CopyAmountOverflow)?;
 
-        self.borrowed_amount = self
-            .borrowed_amount
-            .checked_add(amount_to_add)
-            .ok_or(Error::BorrowedAmountOverflow)?;
-
         Ok(())
     }
 
     /// Getter for the book in the storage
     pub fn get_book(&self) -> &Book {
         &self.book
+    }
+}
+
+impl fmt::Display for BookStorage {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(
+            f,
+            "{}\nCopy Amount: {}\nBooks Borrowed: {}",
+            self.book, self.copy_amount, self.borrowed_amount
+        )
     }
 }
 
@@ -141,11 +147,42 @@ mod tests {
     }
 
     #[test]
-    fn successful_add_copy() -> Result<()> {
+    fn successful_add_copies() -> Result<()> {
         let mut storage = make_storage();
-        storage.add_book_copies()?;
-        assert_eq!(storage.copy_amount, 2);
-        assert_eq!(storage.borrowed_amount, 1);
+        storage.add_book_copies(5)?;
+        assert_eq!(storage.copy_amount, 6);
+        assert_eq!(storage.borrowed_amount, 0);
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_complex_borrows_returns_and_add_copies() -> Result<()> {
+        let mut storage = make_storage();
+
+        // Add copies
+        storage.add_book_copies(5)?;
+        assert_eq!(storage.copy_amount, 6);
+        assert_eq!(storage.borrowed_amount, 0);
+
+        // Borrow some books
+        storage.borrow_book()?;
+        storage.borrow_book()?;
+        storage.borrow_book()?;
+        assert_eq!(storage.copy_amount, 6);
+        assert_eq!(storage.borrowed_amount, 3);
+
+        // Add more copies
+        storage.add_book_copies(5)?;
+        assert_eq!(storage.copy_amount, 11);
+        assert_eq!(storage.borrowed_amount, 3);
+
+        // Return Books
+        storage.return_book()?;
+        storage.return_book()?;
+        storage.return_book()?;
+        assert_eq!(storage.copy_amount, 11);
+        assert_eq!(storage.borrowed_amount, 0);
 
         Ok(())
     }

@@ -4,6 +4,7 @@
 use std::fmt;
 
 /// A book struct
+#[derive(core::cmp::PartialEq)]
 pub struct Book {
     /// Name of the book
     book_name: String,
@@ -19,12 +20,6 @@ impl Book {
             book_author,
             book_name,
         }
-    }
-}
-
-impl core::cmp::PartialEq for Book {
-    fn eq(&self, other: &Self) -> bool {
-        self.book_author.eq(&other.book_author) && self.book_name.eq(&other.book_name)
     }
 }
 

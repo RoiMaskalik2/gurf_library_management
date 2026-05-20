@@ -26,8 +26,8 @@ pub enum Error {
     /// Occurs when trying to add a book that already exists in the library
     AddExistingBookToLibrary,
 
-    /// Occurs when trying to add book copies to a book that does not exist in the library
-    AddBookCopiesOfNonExistingBook,
+    /// Occurs when trying to a book that does not exist in the library
+    NonExistingBookId,
 }
 
 impl std::error::Error for Error {}
