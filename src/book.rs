@@ -4,7 +4,7 @@
 use std::fmt;
 
 /// A book struct
-#[derive(core::cmp::PartialEq)]
+#[derive(core::cmp::PartialEq, Default)]
 pub struct Book {
     /// Name of the book
     book_name: String,

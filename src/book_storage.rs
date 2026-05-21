@@ -16,6 +16,7 @@ const INITIAL_BOOK_COPIES: u32 = 1;
 const BORROW_BOOK: u32 = 1;
 
 /// Provides the functionality of storing multiple copies of the same book
+#[derive(Default)]
 pub struct BookStorage {
     /// contains book information about the book that is stored in the storage
     book: Book,
