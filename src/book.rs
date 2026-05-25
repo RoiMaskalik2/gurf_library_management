@@ -1,10 +1,11 @@
 //! Book module that will export an API for the following functionalities:
 //! 1. Creating a book.
 //! 2. Show a summary of a book
+use core::cmp::{Eq, PartialEq};
 use std::fmt;
 
 /// A book struct
-#[derive(core::cmp::PartialEq, Default)]
+#[derive(Eq, PartialEq, Default, Debug, Hash)]
 pub struct Book {
     /// Name of the book
     book_name: String,

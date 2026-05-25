@@ -7,14 +7,13 @@
 
 pub mod book;
 pub mod book_library;
-pub mod book_storage;
 mod err;
 pub mod library_cli;
+pub mod storage;
 pub mod user_input;
 
 pub use book_library::BookLibrary;
-pub use library_cli::BookLibraryCli;
-pub use library_cli::UserChoice;
+pub use library_cli::{BookLibraryCli, UserChoice};
 
 pub use err::Error;
 /// Type alias for the Result enum so that callers will not need to include the error enum in it.

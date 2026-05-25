@@ -21,7 +21,7 @@ pub fn input_string(display_message: &str) -> Result<String> {
 }
 
 /// Reads an input from the standard input, trims it
-/// validates that the input is an i32 type and returns the input as an integer
+/// valates that the input is an i32 type and returns the input as an integer
 pub fn input_unsigned_integer(display_message: &str) -> Result<u32> {
     let user_input = input_string(display_message)?;
 
@@ -29,43 +29,47 @@ pub fn input_unsigned_integer(display_message: &str) -> Result<u32> {
     Ok(integer_input)
 }
 
-/// Reads input from the standard input and converts it into a valid [`UserChoice`]
+/// Reads input from the standard input and converts it into a val [`UserChoice`]
 /// In order to be able to use the input in [`crate::BookLibrary`]
 pub fn read_library_user_choice() -> Result<UserChoice> {
     let operation_choice = input_unsigned_integer("Your choice: ")?;
 
     match operation_choice {
         1 => {
-            let book_name = input_string("Enter book name: ")?;
-            let book_author = input_string("Enter book author: ")?;
-            Ok(UserChoice::AddBookToLibrary(Book::new(
-                book_name,
-                book_author,
-            )))
+            let book = input_book()?;
+            Ok(UserChoice::AddBookToLibrary(book))
         }
         2 => {
-            let book_id = input_unsigned_integer("Enter book ID to remove: ")?;
-            Ok(UserChoice::RemoveBookFromLibrary(book_id))
+            let book = input_book()?;
+            Ok(UserChoice::RemoveBookFromLibrary(book))
         }
         3 => {
-            let book_id = input_unsigned_integer("Enter book ID to add copies to: ")?;
+            let book = input_book()?;
             let copy_amount = input_unsigned_integer("Enter number of copies to add: ")?;
-            Ok(UserChoice::AddBookCopies((book_id, copy_amount)))
+            Ok(UserChoice::AddBookCopies((book, copy_amount)))
         }
         4 => {
-            let book_id = input_unsigned_integer("Enter book ID to borrow: ")?;
-            Ok(UserChoice::BorrowBook(book_id))
+            let book = input_book()?;
+            Ok(UserChoice::BorrowBook(book))
         }
         5 => {
-            let book_id = input_unsigned_integer("Enter book ID to return: ")?;
-            Ok(UserChoice::ReturnBook(book_id))
+            let book = input_book()?;
+            Ok(UserChoice::ReturnBook(book))
         }
         6 => {
-            let book_id = input_unsigned_integer("Enter book ID to print information about: ")?;
-            Ok(UserChoice::PrintBookInformation(book_id))
+            let book = input_book()?;
+            Ok(UserChoice::PrintBookInformation(book))
         }
         7 => Ok(UserChoice::PrintLibraryBookInformation),
         8 => Ok(UserChoice::ExitCli),
         _ => Err(Error::InvalidCliChoice),
     }
+}
+
+/// Reads input from the stdin and converts it into a [`Book`] struct
+pub fn input_book() -> Result<Book> {
+    let book_name = input_string("Enter Book name: ")?;
+    let book_author = input_string("Enter Book author: ")?;
+
+    Ok(Book::new(book_name, book_author))
 }

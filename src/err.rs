@@ -4,20 +4,20 @@ use std::{io, num};
 /// Represents an error that can occur while using the library crate.
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
-    // ---- book_storage --------------------------------------------
-    /// Occurs on a borrow attempt if all of the storage's books are already borroweds
+    // ---- storage --------------------------------------------
+    /// Occurs on a borrow attempt if all of the storage's items are already borroweds
     #[error("{self:?}")]
-    InvalidBookBorrow,
+    InvalidItemBorrow,
 
-    /// Occurs on a return attempt if all of the storage's books are inside the storage
+    /// Occurs on a return attempt if all of the storage's items are inside the storage
     #[error("{self:?}")]
-    InvalidBookReturn,
+    InvalidItemReturn,
 
-    /// Occurs when an overflow occurs when adding a copy of a book
+    /// Occurs when an overflow occurs when adding a copy of an item
     #[error("{self:?}")]
     CopyAmountOverflow,
 
-    /// Occurs when an overflow occurs when trying to borrow a book
+    /// Occurs when an overflow occurs when trying to borrow an item
     #[error("{self:?}")]
     BorrowedAmountOverflow,
 
@@ -30,9 +30,9 @@ pub enum Error {
     #[error("{self:?}")]
     AddExistingBookToLibrary,
 
-    /// Occurs when trying to a book that does not exist in the library
+    /// Occurs when trying to accesss a book that does not exist in the library
     #[error("{self:?}")]
-    NonExistingBookId,
+    NonExistingBook,
 
     // ---- user_input -----------------------------------------------
     /// User provided an empty input.

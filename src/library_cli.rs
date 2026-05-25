@@ -11,19 +11,19 @@ pub enum UserChoice {
     AddBookToLibrary(Book),
 
     /// Removes a book and all of it's copies from the library
-    RemoveBookFromLibrary(u32),
+    RemoveBookFromLibrary(Book),
 
     /// Adds copies to an existing book in the library
-    AddBookCopies((u32, u32)),
+    AddBookCopies((Book, u32)),
 
     /// Borrow a specific book id if it exists in the library and there are available copies to borrow
-    BorrowBook(u32),
+    BorrowBook(Book),
 
     /// Return a borrowed book to the library
-    ReturnBook(u32),
+    ReturnBook(Book),
 
     /// Print information about a specific book
-    PrintBookInformation(u32),
+    PrintBookInformation(Book),
 
     /// Print information about the entire books in the library
     PrintLibraryBookInformation,
@@ -72,13 +72,13 @@ impl BookLibraryCli {
     pub fn perform_operation(&mut self, user_choice: UserChoice) -> Result<ControlFlow<()>> {
         match user_choice {
             UserChoice::AddBookToLibrary(book) => self.add_book_to_library(book),
-            UserChoice::RemoveBookFromLibrary(book_id) => self.remove_book_from_library(book_id),
-            UserChoice::AddBookCopies((book_id, copy_amount)) => {
-                self.add_book_copies(book_id, copy_amount)
+            UserChoice::RemoveBookFromLibrary(book) => self.remove_book_from_library(&book),
+            UserChoice::AddBookCopies((book, copy_amount)) => {
+                self.add_book_copies(&book, copy_amount)
             }
-            UserChoice::BorrowBook(book_id) => self.borrow_book(book_id),
-            UserChoice::ReturnBook(book_id) => self.return_book(book_id),
-            UserChoice::PrintBookInformation(book_id) => self.print_book(book_id),
+            UserChoice::BorrowBook(book) => self.borrow_book(&book),
+            UserChoice::ReturnBook(book) => self.return_book(&book),
+            UserChoice::PrintBookInformation(book) => self.print_book(&book),
             UserChoice::PrintLibraryBookInformation => self.print_library(),
             UserChoice::ExitCli => Ok(ControlFlow::Break(())),
         }
@@ -90,41 +90,36 @@ impl BookLibraryCli {
         Ok(ControlFlow::Continue(()))
     }
 
-    fn remove_book_from_library(&mut self, book_id: u32) -> Result<ControlFlow<()>> {
-        self.book_library.remove_book(book_id)?;
+    fn remove_book_from_library(&mut self, book: &Book) -> Result<ControlFlow<()>> {
+        self.book_library.remove_book(book)?;
 
         Ok(ControlFlow::Continue(()))
     }
 
-    fn add_book_copies(&mut self, book_id: u32, copy_amount: u32) -> Result<ControlFlow<()>> {
+    fn add_book_copies(&mut self, book: &Book, copy_amount: u32) -> Result<ControlFlow<()>> {
         self.book_library
-            .get_mut_book_storage(book_id)?
-            .add_book_copies(copy_amount)?;
+            .get_mut_book_storage(book)?
+            .add_copies(copy_amount)?;
 
         Ok(ControlFlow::Continue(()))
     }
 
-    fn borrow_book(&mut self, book_id: u32) -> Result<ControlFlow<()>> {
+    fn borrow_book(&mut self, book: &Book) -> Result<ControlFlow<()>> {
+        self.book_library.get_mut_book_storage(book)?.borrow()?;
+
+        Ok(ControlFlow::Continue(()))
+    }
+
+    fn return_book(&mut self, book: &Book) -> Result<ControlFlow<()>> {
         self.book_library
-            .get_mut_book_storage(book_id)?
-            .borrow_book()?;
+            .get_mut_book_storage(book)?
+            .return_item()?;
 
         Ok(ControlFlow::Continue(()))
     }
 
-    fn return_book(&mut self, book_id: u32) -> Result<ControlFlow<()>> {
-        self.book_library
-            .get_mut_book_storage(book_id)?
-            .return_book()?;
-
-        Ok(ControlFlow::Continue(()))
-    }
-
-    fn print_book(&self, book_id: u32) -> Result<ControlFlow<()>> {
-        println!(
-            "{}",
-            self.book_library.get_book_storage(book_id)?.get_book()
-        );
+    fn print_book(&self, book: &Book) -> Result<ControlFlow<()>> {
+        self.book_library.print_book_information(book)?;
 
         Ok(ControlFlow::Continue(()))
     }
