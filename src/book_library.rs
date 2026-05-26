@@ -7,7 +7,7 @@
 use crate::{Error, Result, book::Book, storage::Storage};
 use std::{collections::HashMap, fmt};
 /// This struct will provide an API to the functionality of the module
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct BookLibrary {
     /// Contains all of the book storages of the library
     book_storages: HashMap<Book, Storage>,
@@ -64,14 +64,6 @@ impl BookLibrary {
         println!("{}\n", book_storage);
 
         Ok(())
-    }
-}
-
-impl Default for BookLibrary {
-    fn default() -> Self {
-        Self {
-            book_storages: HashMap::default(),
-        }
     }
 }
 

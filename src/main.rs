@@ -1,6 +1,5 @@
-use std::ops::ControlFlow;
-
 use library_management::{BookLibraryCli, Result, user_input::read_library_user_choice};
+use std::ops::ControlFlow;
 
 fn main() -> core::result::Result<(), Box<dyn std::error::Error>> {
     run_interactive_cli()?;

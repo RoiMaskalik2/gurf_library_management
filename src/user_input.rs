@@ -1,8 +1,8 @@
 //! User input handling module.
 //!
 //! includes functions for  user input from the command line.
-
-use crate::{Error, Result, UserChoice, book::Book};
+use crate::{Error, Result, UserChoice};
+use clap::Parser;
 use std::io;
 
 /// Reads a string from the standard input, trims it, and checks that the input is not empty.
@@ -32,44 +32,9 @@ pub fn input_unsigned_integer(display_message: &str) -> Result<u32> {
 /// Reads input from the standard input and converts it into a val [`UserChoice`]
 /// In order to be able to use the input in [`crate::BookLibrary`]
 pub fn read_library_user_choice() -> Result<UserChoice> {
-    let operation_choice = input_unsigned_integer("Your choice: ")?;
+    let user_command = input_string("Command: ")?;
 
-    match operation_choice {
-        1 => {
-            let book = input_book()?;
-            Ok(UserChoice::AddBookToLibrary(book))
-        }
-        2 => {
-            let book = input_book()?;
-            Ok(UserChoice::RemoveBookFromLibrary(book))
-        }
-        3 => {
-            let book = input_book()?;
-            let copy_amount = input_unsigned_integer("Enter number of copies to add: ")?;
-            Ok(UserChoice::AddBookCopies((book, copy_amount)))
-        }
-        4 => {
-            let book = input_book()?;
-            Ok(UserChoice::BorrowBook(book))
-        }
-        5 => {
-            let book = input_book()?;
-            Ok(UserChoice::ReturnBook(book))
-        }
-        6 => {
-            let book = input_book()?;
-            Ok(UserChoice::PrintBookInformation(book))
-        }
-        7 => Ok(UserChoice::PrintLibraryBookInformation),
-        8 => Ok(UserChoice::ExitCli),
-        _ => Err(Error::InvalidCliChoice),
-    }
-}
+    let user_choice = UserChoice::try_parse_from(shell_words::split(&user_command)?.iter())?;
 
-/// Reads input from the stdin and converts it into a [`Book`] struct
-pub fn input_book() -> Result<Book> {
-    let book_name = input_string("Enter Book name: ")?;
-    let book_author = input_string("Enter Book author: ")?;
-
-    Ok(Book::new(book_name, book_author))
+    Ok(user_choice)
 }

@@ -6,3 +6,5 @@ edition = "2024"
 [dependencies]
 thiserror = "2.0.18"
 strum = {version="0.28.0", features = ["derive"]}
+clap = { version = "4", features = ["derive"] }
+shell-words = "1.1"

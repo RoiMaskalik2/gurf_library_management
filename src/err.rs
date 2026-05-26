@@ -47,8 +47,12 @@ pub enum Error {
     #[error("{self:?}")]
     ParseInt(#[from] num::ParseIntError),
 
+    /// Error occurred during Parsing a library user choice command.
+    #[error("{self:?}")]
+    ParseCommand(#[from] shell_words::ParseError),
+
     // ---- library_cli ----------------------------------------------
     /// User Did not choose a valid cli choice
     #[error("{self:?}")]
-    InvalidCliChoice,
+    InvalidCliChoice(#[from] clap::Error),
 }
